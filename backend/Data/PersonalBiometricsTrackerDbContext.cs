@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using PersonalBiometricsTracker.Entities;
 
 namespace PersonalBiometricsTracker.Data
 {
@@ -8,6 +9,9 @@ namespace PersonalBiometricsTracker.Data
         {
 
         }
+
+        // Db Sets
+        public DbSet<User> Users { get; set; }
 
     }
 }
