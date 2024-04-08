@@ -13,6 +13,7 @@ namespace PersonalBiometricsTracker.Data
         // Db Sets
         public DbSet<User> Users { get; set; }
         public DbSet<Weight> Weights { get; set; }
+        public DbSet<BloodGlucose> BloodGlucoses { get; set; }
 
     }
 }

@@ -21,5 +21,13 @@ namespace PersonalBiometricsTracker.Entities
         public string Password { get; set; }
 
         public virtual ICollection<Weight> Weights { get; set; }
+
+        public virtual ICollection<BloodGlucose> BloodGlucoses { get; set; }
+
+        public User()
+        {
+            Weights = new HashSet<Weight>();
+            BloodGlucoses = new HashSet<BloodGlucose>();
+        }
     }
 }
