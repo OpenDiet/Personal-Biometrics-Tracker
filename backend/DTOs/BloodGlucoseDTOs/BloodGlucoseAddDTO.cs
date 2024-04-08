@@ -1,4 +1,4 @@
-namespace PersonalBiometricsTracker.DTOs
+namespace PersonalBiometricsTracker.Dtos
 {
     public class BloodGlucoseAddDTO
     {

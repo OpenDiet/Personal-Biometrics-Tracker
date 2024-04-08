@@ -1,6 +1,6 @@
-namespace PersonalBiometricsTracker.DTOs
+namespace PersonalBiometricsTracker.Dtos
 {
-    public class WeigthAddDTO
+    public class WeightAddDto
     {
         public decimal Value { get; set; }
 
