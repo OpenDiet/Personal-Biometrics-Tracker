@@ -19,5 +19,7 @@ namespace PersonalBiometricsTracker.Entities
         [Required]
         [StringLength(255)]
         public string Password { get; set; }
+
+        public virtual ICollection<Weight> Weights { get; set; }
     }
 }
