@@ -1,6 +1,6 @@
 namespace PersonalBiometricsTracker.Dtos
 {
-    public class BloodGlucoseDTO
+    public class BloodGlucoseDto
     {
         public int Id { get; set; }
 
