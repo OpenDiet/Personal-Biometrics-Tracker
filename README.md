@@ -4,6 +4,8 @@ This project is under the beginning stages of development. The intentions are to
 
 The first stage will include weight tracking and blood glucose tracking.
 
+Project work can be tracked on my Kanban board at: https://tree.taiga.io/project/jtsimon-personal-biometrics-tracker
+
 ## Tech Stack
 
 - **Docker**: Docker will be used to containerize and run the application.
