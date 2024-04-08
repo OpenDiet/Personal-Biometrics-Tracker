@@ -1,6 +1,6 @@
 namespace PersonalBiometricsTracker.Dtos
 {
-    public class UserRegistrationDTO
+    public class UserRegistrationDto
     {
         public string Username { get; set; }
 
