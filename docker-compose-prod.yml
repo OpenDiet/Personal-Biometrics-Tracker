@@ -1,0 +1,34 @@
+version: "3.8"
+services:
+  api:
+    build:
+      context: ./backend
+    ports:
+      - "8000:80" # Expose the API to the internet through port 8000
+    depends_on:
+      - db
+    networks:
+      - backend_network
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=biometricsdb;Username=${DB_USER};Password=${DB_PASSWORD};
+      - ASPNETCORE_ENVIRONMENT=Production
+      - JWTSecret=${JWT_SECRET}
+
+  db:
+    image: postgres
+    environment:
+      # Replace the actual values with placeholders
+      POSTGRES_DB: biometricsdb
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - backend_network
+
+networks:
+  backend_network:
+    driver: bridge
+
+volumes:
+  pgdata:
