@@ -30,6 +30,7 @@ builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IWeightService, WeightService>();
 builder.Services.AddScoped<IBloodGlucoseService, BloodGlucoseService>();
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
@@ -49,5 +50,8 @@ if (!app.Environment.IsDevelopment())
 // Middleware
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Map Controllers
+app.MapControllers();
 
 app.Run();
