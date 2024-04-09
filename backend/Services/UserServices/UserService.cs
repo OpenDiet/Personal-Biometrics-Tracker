@@ -86,26 +86,46 @@ namespace PersonalBiometricsTracker.Services
                 throw new Exception("User not found.");
             }
 
-            // Check for email uniqueness if the email is being updated
-            if (user.Email != userUpdateDto.Email && await _context.Users.AnyAsync(u => u.Email == userUpdateDto.Email))
+            // Update username if provided and it's different from the current one
+            if (!string.IsNullOrEmpty(userUpdateDto.Username) && userUpdateDto.Username != user.Username)
             {
-                throw new Exception("Email already in use.");
+                var usernameExists = await _context.Users.AnyAsync(u => u.Username == userUpdateDto.Username);
+                if (usernameExists)
+                {
+                    throw new Exception("Username already in use.");
+                }
+                user.Username = userUpdateDto.Username;
             }
 
-            // Similarly, check for username uniqueness if the username is being updated
-            if (user.Username != userUpdateDto.Username && await _context.Users.AnyAsync(u => u.Username == userUpdateDto.Username))
+            // Update email if provided and it's different from the current one
+            if (!string.IsNullOrEmpty(userUpdateDto.Email) && userUpdateDto.Email != user.Email)
             {
-                throw new Exception("Username already in use.");
+                var emailExists = await _context.Users.AnyAsync(u => u.Email == userUpdateDto.Email);
+                if (emailExists)
+                {
+                    throw new Exception("Email already in use.");
+                }
+                user.Email = userUpdateDto.Email;
             }
 
-            // Update user properties
-            user.Email = userUpdateDto.Email;
-            user.Username = userUpdateDto.Username;
+            // Update password if provided
+            if (!string.IsNullOrEmpty(userUpdateDto.Password))
+            {
+                user.Password = _passwordHasher.HashPassword(user, userUpdateDto.Password);
+            }
 
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new Exception("An error occurred while updating the user.");
+            }
 
             return user;
         }
+
 
         private string GenerateJwtToken(User user)
         {
