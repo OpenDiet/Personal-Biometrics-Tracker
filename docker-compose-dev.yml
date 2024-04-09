@@ -12,7 +12,7 @@ services:
     environment:
       - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=biometricsdb;Username=biometricsuser;Password=yourpassword;
       - ASPNETCORE_ENVIRONMENT=Development
-      - JWTSecret: your_jwt_secret_here
+      - JWTSecret=your_jwt_secret_here
 
   db:
     image: postgres
