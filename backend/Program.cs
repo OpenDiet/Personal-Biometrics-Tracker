@@ -29,6 +29,7 @@ builder.Services.AddDbContext<PersonalBiometricsTrackerDbContext>(options => opt
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IWeightService, WeightService>();
+builder.Services.AddScoped<IBloodGlucoseService, BloodGlucoseService>();
 
 var app = builder.Build();
 
