@@ -84,7 +84,7 @@ namespace PersonalBiometricsTracker.Services
             return token;
         }
 
-        public async Task<User> UpdateUserAsync(int userId, UserUpdateDto userUpdateDto)
+        public async Task<UserProfileDto> UpdateUserAsync(int userId, UserUpdateDto userUpdateDto)
         {
             var user = await _context.Users.FindAsync(userId);
 
@@ -130,7 +130,14 @@ namespace PersonalBiometricsTracker.Services
                 throw new Exception("An error occurred while updating the user.");
             }
 
-            return user;
+            var responseDto = new UserProfileDto
+            {
+                Id = user.Id,
+                Username = user.Username,
+                Email = user.Email
+            };
+
+            return responseDto;
         }
 
 
