@@ -1,9 +1,10 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using PersonalBiometricsTracker.Data;
+using PersonalBiometricsTracker.Entities;
 using PersonalBiometricsTracker.Services;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 builder.Services.AddAuthorization();
 builder.Services.AddDbContext<PersonalBiometricsTrackerDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("BiometricsDb")));
+builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IWeightService, WeightService>();
 
