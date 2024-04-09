@@ -23,7 +23,7 @@ namespace PersonalBiometricsTracker.Services
             _configuration = configuration;
         }
 
-        public async Task<User> RegisterUserAsync(UserRegistrationDto userDto)
+        public async Task<UserProfileDto> RegisterUserAsync(UserRegistrationDto userDto)
         {
             // Check if the user already exists
             var existingUserByEmail = await _context.Users.AnyAsync(u => u.Email == userDto.Email);
@@ -52,7 +52,14 @@ namespace PersonalBiometricsTracker.Services
 
             await _context.SaveChangesAsync();
 
-            return user;
+            var responseDto = new UserProfileDto
+            {
+                Id = user.Id,
+                Username = user.Username,
+                Email = user.Email
+            };
+
+            return responseDto;
         }
 
         public async Task<string> AuthenticateAsync(UserLoginDto userDto)
