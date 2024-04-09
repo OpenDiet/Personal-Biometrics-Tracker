@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Configuration.UserSecrets;
+
 namespace PersonalBiometricsTracker.Dtos
 {
     public class BloodGlucoseUpdateDto
@@ -7,5 +9,7 @@ namespace PersonalBiometricsTracker.Dtos
         public decimal Value { get; set; }
 
         public DateTime DateTimeRecorded { get; set; }
+
+        public int UserId { get; set; }
     }
 }
