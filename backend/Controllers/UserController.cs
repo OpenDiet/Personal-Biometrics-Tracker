@@ -46,7 +46,7 @@ namespace PersonalBiometricsTracker.Controllers
             }
         }
 
-        [HttpPut("update/{id}")]
+        [HttpPatch("update/{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] UserUpdateDto userDto)
         {
             if (id <= 0)
