@@ -76,4 +76,21 @@ public class BloodGlucoseServiceTests
             await Assert.ThrowsAsync<NotFoundException>(() => service.UpdateBloodGlucoseAsync(99, 1, dto));
         }
     }
+
+    [Fact]
+    public async Task AddBloodGlucoseAsync_InvalidData_Null_ThrowsValidationException()
+    {
+        var options = new DbContextOptionsBuilder<PersonalBiometricsTrackerDbContext>()
+        .UseInMemoryDatabase(databaseName: "TestDb_AddBloodGlucoseInvalidNull")
+        .Options;
+
+        using (var context = new PersonalBiometricsTrackerDbContext(options))
+        {
+            var service = new BloodGlucoseService(context);
+            var dto = new BloodGlucoseAddDto { };
+
+            await Assert.ThrowsAsync<ValidationException>(() => service.AddBloodGlucoseAsync(1, dto));
+        }
+    }
+
 }
