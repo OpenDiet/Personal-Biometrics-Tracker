@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using PersonalBiometricsTracker.Dtos;
 using PersonalBiometricsTracker.Services;
 
-namespace PersonalBiometricsTracker.Controller
+namespace PersonalBiometricsTracker.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -14,9 +14,9 @@ namespace PersonalBiometricsTracker.Controller
 
         public WeightController(IWeightService weightService)
         {
-            _weightService = weightService; 
+            _weightService = weightService;
         }
-        
+
         // POST: /Weight
         [HttpPost]
         [Authorize]
@@ -26,10 +26,7 @@ namespace PersonalBiometricsTracker.Controller
             {
                 return BadRequest(ModelState);
             }
-           
-            Console.WriteLine("Date recorded: " + weightAddDto.DateRecorded);
-            Console.WriteLine("Value: " + weightAddDto.Value);
-            
+
             try
             {
                 int userId = GetUserIdFromJwt();
@@ -87,6 +84,6 @@ namespace PersonalBiometricsTracker.Controller
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
             return int.Parse(userIdClaim.Value);
         }
-        
+
     }
 }
