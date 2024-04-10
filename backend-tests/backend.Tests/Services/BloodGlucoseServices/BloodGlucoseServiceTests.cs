@@ -29,6 +29,7 @@ public class BloodGlucoseServiceTests
             Assert.Equal(dto.DateTimeRecorded.Value.Date, addedEntry.DateTimeRecorded.Date);
         }
     }
+
     [Fact]
     public async Task UpdateBloodGlucoseAsync_ValidData_UpdatesRecord()
     {
@@ -90,6 +91,22 @@ public class BloodGlucoseServiceTests
             var dto = new BloodGlucoseAddDto { };
 
             await Assert.ThrowsAsync<ValidationException>(() => service.AddBloodGlucoseAsync(1, dto));
+        }
+    }
+
+    [Fact]
+    public async Task AddBloodGlucoseAsync_UserDoesNotExist_ThrowsNotFoundException()
+    {
+        var options = new DbContextOptionsBuilder<PersonalBiometricsTrackerDbContext>()
+        .UseInMemoryDatabase(databaseName: "TestDb_AddBloodGlucoseUserDoesNotExist")
+        .Options;
+
+        using (var context = new PersonalBiometricsTrackerDbContext(options))
+        {
+            var service = new BloodGlucoseService(context);
+            var dto = new BloodGlucoseAddDto { Value = 100, DateTimeRecorded = DateTime.UtcNow };
+
+            await Assert.ThrowsAsync<NotFoundException>(() => service.AddBloodGlucoseAsync(9999, dto));
         }
     }
 
