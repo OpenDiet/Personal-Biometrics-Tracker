@@ -39,15 +39,19 @@ namespace PersonalBiometricsTracker.Tests
         [Fact]
         public async Task AddBloodGlucoseAsync_ValidData_AddsRecord()
         {
-            // Use _context directly in your test without repeating the setup code
+            // Arrange
+            var user = new User { Username = "TestUser", Email = "test@test.com", Password = "TestPassword" };
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
             var service = new BloodGlucoseService(_context);
             var dto = new BloodGlucoseAddDto { Value = 5.6m, DateTimeRecorded = DateTime.Now };
 
             // Act
-            await service.AddBloodGlucoseAsync(1, dto);
+            await service.AddBloodGlucoseAsync(user.Id, dto);
 
             // Assert
-            var addedEntry = await _context.BloodGlucoses.FirstOrDefaultAsync(b => b.UserId == 1);
+            var addedEntry = await _context.BloodGlucoses.FirstOrDefaultAsync(b => b.UserId == user.Id);
             Assert.NotNull(addedEntry);
             Assert.Equal(dto.Value, addedEntry.Value);
             Assert.Equal(dto.DateTimeRecorded.Value.Date, addedEntry.DateTimeRecorded.Date);
@@ -56,11 +60,15 @@ namespace PersonalBiometricsTracker.Tests
         [Fact]
         public async Task UpdateBloodGlucoseAsync_ValidData_UpdatesRecord()
         {
-            var userId = 1;
+            // Arrange
+            var user = new User { Username = "TestUser", Email = "test@test.com", Password = "TestPassword" };
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
             var updatedValue = 7.8m;
             var updatedDateTime = DateTime.UtcNow;
 
-            var existingRecord = new BloodGlucose { UserId = userId, Value = 5.6m, DateTimeRecorded = DateTime.Now.AddDays(-1) };
+            var existingRecord = new BloodGlucose { UserId = user.Id, Value = 5.6m, DateTimeRecorded = DateTime.Now.AddDays(-1) };
             _context.BloodGlucoses.Add(existingRecord);
             _context.SaveChanges();
 
@@ -68,7 +76,7 @@ namespace PersonalBiometricsTracker.Tests
             var dto = new BloodGlucoseUpdateDto { Value = updatedValue, DateTimeRecorded = updatedDateTime };
 
             // Act
-            await service.UpdateBloodGlucoseAsync(existingRecord.Id, userId, dto);
+            await service.UpdateBloodGlucoseAsync(existingRecord.Id, user.Id, dto);
 
             // Assert
             var updatedEntry = await _context.BloodGlucoses.FirstOrDefaultAsync(b => b.Id == existingRecord.Id);
