@@ -1,26 +1,26 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PersonalBiometricsTracker.Dtos;
 using PersonalBiometricsTracker.Services;
 
-namespace PersonalBiometricsTracker.Controllers
+namespace PersonalBiometricsTracker.Controller
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class WeightController : ControllerBase
+    public class BloodGlucoseController : ControllerBase
     {
-        private readonly IWeightService _weightService;
+        private readonly IBloodGlucoseService _bloodGlucoseService;
 
-        public WeightController(IWeightService weightService)
+        public BloodGlucoseController(IBloodGlucoseService bloodGlucoseService)
         {
-            _weightService = weightService;
+            _bloodGlucoseService = bloodGlucoseService;
         }
 
-        // POST: /Weight
+        // POST: /BloodGlucose
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> AddWeight([FromBody] WeightAddDto weightAddDto)
+        public async Task<IActionResult> AddBloodGlucose([FromBody] BloodGlucoseAddDto bloodGlucoseAddDto)
         {
             if (!ModelState.IsValid)
             {
@@ -30,8 +30,8 @@ namespace PersonalBiometricsTracker.Controllers
             try
             {
                 int userId = GetUserIdFromJwt();
-                var weight = await _weightService.AddWeightAsync(weightAddDto, userId);
-                return StatusCode(201, weight);
+                var bloodGlucose = await _bloodGlucoseService.AddBloodGlucoseAsync(userId, bloodGlucoseAddDto);
+                return StatusCode(201, bloodGlucose);
             }
             catch (Exception ex)
             {
@@ -39,16 +39,16 @@ namespace PersonalBiometricsTracker.Controllers
             }
         }
 
-        // PATCH: /Weight/{id}
+        // PATCH /BloodGlucose/{id}
         [HttpPatch("{id}")]
         [Authorize]
-        public async Task<IActionResult> UpdateWeight(int id, [FromBody] WeightUpdateDto weightUpdateDto)
+        public async Task<IActionResult> UpdateBloodGlucose(int id, [FromBody] BloodGlucoseUpdateDto bloodGlucoseUpdateDto)
         {
             try
             {
                 int userId = GetUserIdFromJwt();
-                var updatedWeight = await _weightService.UpdateWeightAsync(id, userId, weightUpdateDto);
-                return Ok(updatedWeight);
+                var updatedBloodGlucose = await _bloodGlucoseService.UpdateBloodGlucoseAsync(id, userId, bloodGlucoseUpdateDto);
+                return Ok(updatedBloodGlucose);
             }
             catch (Exception ex)
             {
@@ -56,22 +56,22 @@ namespace PersonalBiometricsTracker.Controllers
             }
         }
 
-        // GET: /Weight/User/{userId}
+        // GET: /BloodGlucose/User/{userId}
         [HttpGet("User/{userId}")]
         [Authorize]
-        public async Task<IActionResult> GetUserWeights(int userId)
+        public async Task<IActionResult> GetUserBloodGlucoses(int userId)
         {
             int userIdFromAuth = GetUserIdFromJwt();
 
             if (userId != userIdFromAuth)
             {
-                return Unauthorized("You are not authorized to retrieve that user's weights.");
+                return Unauthorized("You are not authorized to retrieve that user's BloodGlucoses.");
             }
 
             try
             {
-                var weights = await _weightService.GetUserWeightsAsync(userId);
-                return Ok(weights);
+                var bloodGlucoses = await _bloodGlucoseService.GetUserBloodGlucoseRecordsAsync(userId);
+                return Ok(bloodGlucoses);
             }
             catch (Exception ex)
             {

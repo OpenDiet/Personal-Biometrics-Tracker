@@ -1,10 +1,13 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace PersonalBiometricsTracker.Dtos
 {
     public class BloodGlucoseAddDto
     {
-        public decimal Value { get; set; }
-        public DateTime DateTimeRecorded { get; set; }
+        [Required]
+        public decimal? Value { get; set; }
 
-        public int UserId { get; set; }
+        [Required]
+        public DateTime? DateTimeRecorded { get; set; }
     }
 }
