@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PersonalBiometricsTracker.Dtos;
+using PersonalBiometricsTracker.Exceptions;
 using PersonalBiometricsTracker.Services;
 
 namespace PersonalBiometricsTracker.Controller
@@ -61,15 +62,15 @@ namespace PersonalBiometricsTracker.Controller
         [Authorize]
         public async Task<IActionResult> GetUserBloodGlucoses(int userId)
         {
-            int userIdFromAuth = GetUserIdFromJwt();
-
-            if (userId != userIdFromAuth)
-            {
-                return Unauthorized("You are not authorized to retrieve that user's BloodGlucoses.");
-            }
-
             try
             {
+                int userIdFromAuth = GetUserIdFromJwt();
+
+                if (userId != userIdFromAuth)
+                {
+                    return Unauthorized("You are not authorized to retrieve that user's BloodGlucoses.");
+                }
+
                 var bloodGlucoses = await _bloodGlucoseService.GetUserBloodGlucoseRecordsAsync(userId);
                 return Ok(bloodGlucoses);
             }
@@ -82,6 +83,12 @@ namespace PersonalBiometricsTracker.Controller
         private int GetUserIdFromJwt()
         {
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+
+            if (userIdClaim == null)
+            {
+                throw new InvalidCredentialsException("The user ID could not be obtained from the token.");
+            }
+
             return int.Parse(userIdClaim.Value);
         }
 
