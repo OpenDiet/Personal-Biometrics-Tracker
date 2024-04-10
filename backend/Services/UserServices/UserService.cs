@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using PersonalBiometricsTracker.Data;
 using PersonalBiometricsTracker.Dtos;
 using PersonalBiometricsTracker.Entities;
+using PersonalBiometricsTracker.Exceptions;
 
 namespace PersonalBiometricsTracker.Services
 {
@@ -31,12 +32,12 @@ namespace PersonalBiometricsTracker.Services
 
             if (existingUserByEmail)
             {
-                throw new Exception("Email already in use.");
+                throw new KeyAlreadyInUseException("Email address already in use.");
             }
 
             if (existingUserByUserName)
             {
-                throw new Exception("Username already taken.");
+                throw new KeyAlreadyInUseException("Username already in use.");
             }
 
             var user = new User
@@ -68,14 +69,14 @@ namespace PersonalBiometricsTracker.Services
 
             if (user == null)
             {
-                throw new Exception("User not found.");
+                throw new NotFoundException("User not found.");
             }
 
             var PasswordVerificationResult = _passwordHasher.VerifyHashedPassword(user, user.Password, userDto.Password);
 
             if (PasswordVerificationResult != PasswordVerificationResult.Success)
             {
-                throw new Exception("Invalid credentials.");
+                throw new InvalidCredentialsException("Invalid credentials");
             }
 
             // Generate JWT token
@@ -90,7 +91,7 @@ namespace PersonalBiometricsTracker.Services
 
             if (user == null)
             {
-                throw new Exception("User not found.");
+                throw new NotFoundException("User not found.");
             }
 
             // Update username if provided and it's different from the current one
@@ -99,7 +100,7 @@ namespace PersonalBiometricsTracker.Services
                 var usernameExists = await _context.Users.AnyAsync(u => u.Username == userUpdateDto.Username);
                 if (usernameExists)
                 {
-                    throw new Exception("Username already in use.");
+                    throw new KeyAlreadyInUseException("Username already in use.");
                 }
                 user.Username = userUpdateDto.Username;
             }
@@ -110,7 +111,7 @@ namespace PersonalBiometricsTracker.Services
                 var emailExists = await _context.Users.AnyAsync(u => u.Email == userUpdateDto.Email);
                 if (emailExists)
                 {
-                    throw new Exception("Email already in use.");
+                    throw new KeyAlreadyInUseException("Email already in use.");
                 }
                 user.Email = userUpdateDto.Email;
             }
@@ -127,7 +128,7 @@ namespace PersonalBiometricsTracker.Services
             }
             catch (DbUpdateException ex)
             {
-                throw new Exception("An error occurred while updating the user.");
+                throw new GenericException("An error occurred while trying to save the updated user. Database message: " + ex.Message);
             }
 
             var responseDto = new UserProfileDto

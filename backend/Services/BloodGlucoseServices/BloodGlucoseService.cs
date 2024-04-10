@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using PersonalBiometricsTracker.Data;
 using PersonalBiometricsTracker.Dtos;
 using PersonalBiometricsTracker.Entities;
+using PersonalBiometricsTracker.Exceptions;
 
 namespace PersonalBiometricsTracker.Services
 {
@@ -17,9 +18,14 @@ namespace PersonalBiometricsTracker.Services
         public async Task<BloodGlucoseDto> AddBloodGlucoseAsync(int userId, BloodGlucoseAddDto dto)
         {
 
-            if (dto.DateTimeRecorded == null || dto.Value == null)
+            if (dto.Value == null)
             {
-                throw new ArgumentException("Validation failed.");
+                throw new ValidationException("Value was null. Value is required and cannot be null.");
+            }
+
+            if (dto.DateTimeRecorded == null)
+            {
+                throw new ValidationException("DateTimeRecorded was null. DateTimeRecorded is required and cannot be null.");
             }
 
             var record = new BloodGlucose
@@ -50,9 +56,8 @@ namespace PersonalBiometricsTracker.Services
 
             if (record == null || record.UserId != userId)
             {
-                throw new KeyNotFoundException("Record not found or user mismatch.");
+                throw new NotFoundException("BloodGlucose entry not found or you do not have permission to update it.");
             }
-
 
             // If value is different, update it
             if (dto.Value != null && dto.Value != record.Value)
@@ -91,7 +96,6 @@ namespace PersonalBiometricsTracker.Services
                 UserId = b.UserId
             })
             .ToListAsync();
-
 
             return bloodGlucoses;
         }
