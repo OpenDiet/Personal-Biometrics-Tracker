@@ -5,8 +5,8 @@ namespace PersonalBiometricsTracker.Services
 {
     public interface IWeightService
     {
-        Task<Weight> AddWeightAsync(WeightAddDto weightDto, int userId);
-        Task<Weight> UpdateWeightAsync(WeightUpdateDto weightDto);
-        Task<IEnumerable<Weight>> GetUserWeightsAsync(int userId);
+        Task<WeightDto> AddWeightAsync(WeightAddDto weightDto, int userId);
+        Task<WeightDto> UpdateWeightAsync(int id, int userId, WeightUpdateDto weightDto);
+        Task<IEnumerable<WeightDto>> GetUserWeightsAsync(int userId);
     }
 }

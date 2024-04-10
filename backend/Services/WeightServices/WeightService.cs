@@ -14,41 +14,84 @@ namespace PersonalBiometricsTracker.Services
             _context = context;
         }
 
-        public async Task<Weight> AddWeightAsync(WeightAddDto weightDto, int userId)
+        public async Task<WeightDto> AddWeightAsync(WeightAddDto weightDto, int userId)
         {
+            
+            // Null check
+            if (weightDto.DateRecorded == null || weightDto.Value == null)
+            {
+                throw new ArgumentException("Validation failed.");
+            }
+
             var weight = new Weight
             {
                 UserId = userId,
-                Value = weightDto.Value,
-                DateRecorded = weightDto.DateRecorded
+                Value = weightDto.Value.Value,
+                DateRecorded = weightDto.DateRecorded.Value
             };
-
             _context.Weights.Add(weight);
             await _context.SaveChangesAsync();
 
-            return weight;
+            var responseDto = new WeightDto
+            {
+                Id = weight.Id,
+                Value = weight.Value,
+                DateRecorded = weight.DateRecorded,
+                UserId = weight.UserId
+            };
+
+            return responseDto;
         }
 
-        public async Task<Weight> UpdateWeightAsync(WeightUpdateDto weightDto)
+        public async Task<WeightDto> UpdateWeightAsync(int id, int userId, WeightUpdateDto weightDto)
         {
-            var weight = await _context.Weights.FindAsync(weightDto.Id);
+            // Attempt to find the weight record by ID and ensure it belongs to the specified userId
+            var weight = await _context.Weights.FirstOrDefaultAsync(w => w.Id == id && w.UserId == userId);
 
             if (weight == null)
             {
-                throw new Exception("Weight record not found.");
+                throw new Exception("Weight record not found or you do not have permission to update it.");
             }
 
-            weight.Value = weightDto.Value;
-            weight.DateRecorded = weightDto.DateRecorded;
+            // If the weight value was changed, update it: 
+            if (weightDto.Value != null && weightDto.Value != weight.Value)
+            {
+                weight.Value = weightDto.Value.Value;
+            }
+            
+            // If the date recorded was changed, update it: 
+            if (weightDto.DateRecorded != null && weightDto.DateRecorded != weight.DateRecorded)
+            {
+                weight.DateRecorded = weightDto.DateRecorded.Value;
+            }
 
             await _context.SaveChangesAsync();
 
-            return weight;
+            var responseDto = new WeightDto
+            {
+                Id = weight.Id,
+                Value = weight.Value,
+                DateRecorded = weight.DateRecorded,
+                UserId = weight.UserId
+            };
+
+            return responseDto;
         }
 
-        public async Task<IEnumerable<Weight>> GetUserWeightsAsync(int userId)
+        public async Task<IEnumerable<WeightDto>> GetUserWeightsAsync(int userId)
         {
-            return await _context.Weights.Where(w => w.UserId == userId).ToListAsync();
+            var weights = await _context.Weights
+                .Where(w => w.UserId == userId)
+                .Select(w => new WeightDto
+                {
+                    Id = w.Id,
+                    Value = w.Value,
+                    DateRecorded = w.DateRecorded,
+                    UserId = w.UserId
+                })
+                .ToListAsync();
+
+            return weights;
         }
     }
 }
