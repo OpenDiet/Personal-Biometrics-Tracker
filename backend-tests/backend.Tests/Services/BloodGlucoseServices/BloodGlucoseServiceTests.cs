@@ -36,6 +36,9 @@ namespace PersonalBiometricsTracker.Tests
             _connection.Close();
         }
 
+        /**
+            ADD BLOOD GLUCOSE TESTS
+        */
         [Fact]
         public async Task AddBloodGlucoseAsync_ValidData_AddsRecord()
         {
@@ -57,6 +60,27 @@ namespace PersonalBiometricsTracker.Tests
             Assert.Equal(dto.DateTimeRecorded.Value.Date, addedEntry.DateTimeRecorded.Date);
         }
 
+        [Fact]
+        public async Task AddBloodGlucoseAsync_InvalidData_Null_ThrowsValidationException()
+        {
+            var service = new BloodGlucoseService(_context);
+            var dto = new BloodGlucoseAddDto { };
+
+            await Assert.ThrowsAsync<ValidationException>(() => service.AddBloodGlucoseAsync(1, dto));
+        }
+
+        [Fact]
+        public async Task AddBloodGlucoseAsync_UserDoesNotExist_ThrowsDbUpdateException()
+        {
+            var service = new BloodGlucoseService(_context);
+            var dto = new BloodGlucoseAddDto { Value = 100, DateTimeRecorded = DateTime.UtcNow };
+
+            await Assert.ThrowsAsync<DbUpdateException>(() => service.AddBloodGlucoseAsync(9999, dto));
+        }
+
+        /*
+            UPDATE BLOOD GLUCOSE TESTS
+        */
         [Fact]
         public async Task UpdateBloodGlucoseAsync_ValidData_UpdatesRecord()
         {
@@ -96,22 +120,91 @@ namespace PersonalBiometricsTracker.Tests
         }
 
         [Fact]
-        public async Task AddBloodGlucoseAsync_InvalidData_Null_ThrowsValidationException()
+        public async Task UpdateBloodGlucoseAsync_UpdateAnotherUsersRecords_ThrowsNotFoundException()
         {
-            var service = new BloodGlucoseService(_context);
-            var dto = new BloodGlucoseAddDto { };
+            // Arrange
+            var authedUser = new User { Username = "AuthedUser", Email = "auth@test.com", Password = "TestPassword:" };
+            var notAuthedUser = new User { Username = "NotAuthedUser", Email = "notauth@test.com", Password = "TestPassword" };
+            _context.Users.Add(authedUser);
+            _context.Users.Add(notAuthedUser);
+            await _context.SaveChangesAsync();
 
-            await Assert.ThrowsAsync<ValidationException>(() => service.AddBloodGlucoseAsync(1, dto));
+            var service = new BloodGlucoseService(_context);
+            var addDto = new BloodGlucoseAddDto { Value = 6.9m, DateTimeRecorded = DateTime.UtcNow };
+            var updateDto = new BloodGlucoseUpdateDto { Value = 6.9m, DateTimeRecorded = DateTime.UtcNow };
+
+            var notAuthedUserBGEntry = await service.AddBloodGlucoseAsync(notAuthedUser.Id, addDto);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<NotFoundException>(() => service.UpdateBloodGlucoseAsync(notAuthedUserBGEntry.Id, authedUser.Id, updateDto));
         }
 
         [Fact]
-        public async Task AddBloodGlucoseAsync_UserDoesNotExist_ThrowsDbUpdateException()
+        public async Task GetUserBloodGlucoseRecordsAsync_ValidUser_ReturnsCorrectRecords()
         {
-            var service = new BloodGlucoseService(_context);
-            var dto = new BloodGlucoseAddDto { Value = 100, DateTimeRecorded = DateTime.UtcNow };
+            // Arrange
+            var user = new User { Username = "User1", Email = "user1@test.com", Password = "TestPassword" };
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
 
-            await Assert.ThrowsAsync<DbUpdateException>(() => service.AddBloodGlucoseAsync(9999, dto));
+            var service = new BloodGlucoseService(_context);
+
+            var bloodGlucoseRecords = new List<BloodGlucose>
+    {
+        new BloodGlucose { UserId = user.Id, Value = 5.6m, DateTimeRecorded = DateTime.UtcNow.AddDays(-1) },
+        new BloodGlucose { UserId = user.Id, Value = 4.8m, DateTimeRecorded = DateTime.UtcNow }
+    };
+
+            _context.BloodGlucoses.AddRange(bloodGlucoseRecords);
+            await _context.SaveChangesAsync();
+
+            // Act
+            var results = await service.GetUserBloodGlucoseRecordsAsync(user.Id);
+
+            // Assert
+            Assert.Equal(2, results.Count());
+            foreach (var record in results)
+            {
+                Assert.Contains(bloodGlucoseRecords, bg => bg.Value == record.Value && bg.DateTimeRecorded == record.DateTimeRecorded && bg.UserId == record.UserId);
+            }
         }
+
+        [Fact]
+        public async Task GetUserBloodGlucoseRecordsAsync_InvalidUser_ReturnsNoRecords()
+        {
+            // Arrange: Create two users and blood glucose records only for one of them
+            var user1 = new User { Username = "User1", Email = "user1@test.com", Password = "TestPassword" };
+            var user2 = new User { Username = "User2", Email = "user2@test.com", Password = "TestPassword" };
+
+            _context.Users.AddRange(user1, user2);
+            await _context.SaveChangesAsync();
+
+            var service = new BloodGlucoseService(_context);
+
+            var bloodGlucoseRecord = new BloodGlucose { UserId = user1.Id, Value = 5.6m, DateTimeRecorded = DateTime.UtcNow.AddDays(-1) };
+            _context.BloodGlucoses.Add(bloodGlucoseRecord);
+            await _context.SaveChangesAsync();
+
+            // Act: Attempt to retrieve user2's blood glucose records (should be empty)
+            var results = await service.GetUserBloodGlucoseRecordsAsync(user2.Id);
+
+            // Assert
+            Assert.Empty(results);
+        }
+
+        [Fact]
+        public async Task GetUserBloodGlucoseRecordsAsync_NonExistentUser_ThrowsNotFoundException()
+        {
+            // Arrange
+            var nonExistentUserId = 999; // Assuming this user ID does not exist in the database
+            var service = new BloodGlucoseService(_context);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<NotFoundException>(() => service.GetUserBloodGlucoseRecordsAsync(nonExistentUserId));
+        }
+
+
+
 
     }
 
