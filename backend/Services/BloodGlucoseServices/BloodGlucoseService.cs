@@ -86,6 +86,12 @@ namespace PersonalBiometricsTracker.Services
 
         public async Task<IEnumerable<BloodGlucoseDto>> GetUserBloodGlucoseRecordsAsync(int userId)
         {
+            var userExists = await _context.Users.AnyAsync(u => u.Id == userId);
+            if (!userExists)
+            {
+                throw new NotFoundException($"User with ID {userId} does not exist.");
+            }
+
             var bloodGlucoses = await _context.BloodGlucoses
             .Where(b => b.UserId == userId)
             .Select(b => new BloodGlucoseDto
