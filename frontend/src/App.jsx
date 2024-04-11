@@ -1,11 +1,21 @@
-import Layout from "./components/layout/Layout";
-import "@fontsource/roboto/300.css";
-import "@fontsource/roboto/400.css";
-import "@fontsource/roboto/500.css";
-import "@fontsource/roboto/700.css";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import PrivateRoutes from "./utilities/PrivateRoutes";
+import Login from "./components/login/Login";
 
 function App() {
-  return <Layout />;
+  return (
+    <Router>
+      <Routes>
+        {/* UNPROTECTED ROUTES */}
+        <Route path="/login" element={<Login />} />
+
+        {/* PROTECTED ROUTES */}
+        <Route element={<PrivateRoutes />}>
+          <Route path="/" index element={<div>hello world</div>} />
+        </Route>
+      </Routes>
+    </Router>
+  );
 }
 
 export default App;
