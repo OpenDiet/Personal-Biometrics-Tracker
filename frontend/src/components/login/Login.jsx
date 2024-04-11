@@ -1,6 +1,15 @@
-import React, { useState } from "react";
-import { Box, Button, TextField, Typography, Container } from "@mui/material";
+import { useState } from "react";
+import {
+  Box,
+  Button,
+  InputAdornment,
+  TextField,
+  Typography,
+} from "@mui/material";
 import Layout from "../layout/Layout";
+import { Person } from "@mui/icons-material";
+import PasswordIcon from "@mui/icons-material/Password";
+import LoginIcon from "@mui/icons-material/Login";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -50,6 +59,13 @@ const Login = () => {
             name="username"
             autoComplete="username"
             autoFocus
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Person />
+                </InputAdornment>
+              ),
+            }}
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
@@ -62,11 +78,32 @@ const Login = () => {
             type="password"
             id="password"
             autoComplete="password"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <PasswordIcon />
+                </InputAdornment>
+              ),
+            }}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <Button type="submit" fullWidth variant="contained">
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            startIcon={<LoginIcon />}
+            sx={{ marginTop: 1 }}
+          >
             Sign In
+          </Button>
+          <Button
+            fullWidth
+            variant="contained"
+            color="secondary"
+            sx={{ marginTop: 2 }}
+          >
+            No account? Register for free!
           </Button>
         </Box>
       </Box>
