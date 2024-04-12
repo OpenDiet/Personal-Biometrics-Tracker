@@ -11,6 +11,8 @@ services:
       - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=biometricsdb;Username=${DB_USER};Password=${DB_PASSWORD};
       - ASPNETCORE_ENVIRONMENT=Production
       - JWTSecret=${JWT_SECRET}
+      - ASPNETCORE_URLS=http://+:80;https://+:443
+      - ASPNETCORE_HTTPS_PORT=443
 
   caddy:
     image: caddy:2-alpine
