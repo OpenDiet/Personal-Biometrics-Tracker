@@ -12,13 +12,13 @@ import {
   Typography,
 } from "@mui/material";
 import Layout from "../layout/Layout";
-import { Person } from "@mui/icons-material";
+import { Email, HowToReg, Person } from "@mui/icons-material";
 import PasswordIcon from "@mui/icons-material/Password";
-import LoginIcon from "@mui/icons-material/Login";
 
-const Login = () => {
+const Registration = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
   const [error, setError] = useState("");
 
   const handleSubmit = (event) => {
@@ -26,13 +26,13 @@ const Login = () => {
     setError("");
 
     // TODO: Implement validation
-    if (!username || !password) {
-      setError("Please enter both username and password");
+    if (!username || !password || !email) {
+      setError("Username, email, and password are required.");
       return;
     }
 
-    // TODO: Implement login logic
-    console.log("Login Submitted", { username, password });
+    // TODO: Implement registration logic
+    console.log("Registration Submitted", { username, email, password });
 
     // Reset form fields
     setUsername("");
@@ -63,7 +63,7 @@ const Login = () => {
           }}
         >
           <Typography component="h1" variant="h5">
-            Login to your account
+            Register as a new user
           </Typography>
           {error && (
             <Typography color="error" mt={1} mb={1}>
@@ -94,6 +94,24 @@ const Login = () => {
               margin="normal"
               required
               fullWidth
+              id="email"
+              label="Email"
+              name="email"
+              autoComplete="email"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Email />
+                  </InputAdornment>
+                ),
+              }}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
               name="password"
               label="Password"
               type="password"
@@ -119,25 +137,24 @@ const Login = () => {
             >
               <FormGroup>
                 <FormControlLabel
-                  control={<Checkbox defaultChecked />}
-                  label="Stay logged in"
+                  control={<Checkbox />}
+                  label="I agree to Terms and Conditions"
                 />
               </FormGroup>
-              <Link href="#">Forgot password?</Link>
             </Box>
             <Button
               type="submit"
               fullWidth
               variant="contained"
-              startIcon={<LoginIcon />}
+              startIcon={<HowToReg />}
               sx={{ marginTop: 1 }}
             >
-              Sign In
+              Register
             </Button>
             <Typography mt={2}>
-              Don&apos;t have an account yet?{" "}
-              <Link component={RouterLink} to="/registration">
-                Register as a new user
+              Already have an account?{" "}
+              <Link component={RouterLink} to="/login">
+                Login to your account
               </Link>
               !
             </Typography>
@@ -148,4 +165,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Registration;

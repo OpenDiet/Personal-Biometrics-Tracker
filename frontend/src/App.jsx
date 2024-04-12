@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import PrivateRoutes from "./utilities/PrivateRoutes";
 import Login from "./components/login/Login";
+import Registration from "./components/registration/Registration";
 
 function App() {
   return (
@@ -8,6 +9,7 @@ function App() {
       <Routes>
         {/* UNPROTECTED ROUTES */}
         <Route path="/login" element={<Login />} />
+        <Route path="/registration" element={<Registration />} />
 
         {/* PROTECTED ROUTES */}
         <Route element={<PrivateRoutes />}>
