@@ -21,7 +21,7 @@ services:
       - ./Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
       - caddy_config:/config
-      - ./frontend/dist:/frontend/dist
+      - ./frontend/dist:/frontend_dist
     networks:
       - backend_network
 
@@ -45,4 +45,4 @@ volumes:
   pgdata:
   caddy_data:
   caddy_config:
-  frontend/dist:
+  frontend_dist:
