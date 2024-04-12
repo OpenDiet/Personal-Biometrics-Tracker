@@ -1,0 +1,9 @@
+pbt.opendiet.io {
+    root * /frontend-dist
+    file_server
+    encode gzip
+}
+
+pbtapi.opendiet.io {
+    reverse_proxy api:8080
+}
