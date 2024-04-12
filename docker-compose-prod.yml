@@ -24,6 +24,9 @@ services:
       - ./frontend/dist:/frontend_dist
     networks:
       - backend_network
+    depends_on:
+      - api
+      - db
 
   db:
     image: postgres
