@@ -1,5 +1,5 @@
 pbt.opendiet.io {
-    root * /frontend-dist
+    root * /frontend/dist
     file_server
     encode gzip
 }
