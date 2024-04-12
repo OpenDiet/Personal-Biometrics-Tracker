@@ -2,6 +2,12 @@ pbt.opendiet.io {
     root * /frontend_dist
     file_server
     encode gzip
+
+    # Handle SPA routing by falling back to index.html
+    @notStatic {
+        not path /static/* /favicon.ico /asset-manifest.json
+    }
+    try_files {path} {path}/ /index.html @notStatic
 }
 
 pbtapi.opendiet.io {
