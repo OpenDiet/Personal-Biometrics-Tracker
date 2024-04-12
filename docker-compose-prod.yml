@@ -3,8 +3,6 @@ services:
   api:
     build:
       context: ./backend
-    ports:
-      - "8080:8080" # Expose the API to the internet through port 8000
     depends_on:
       - db
     networks:
@@ -13,6 +11,19 @@ services:
       - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=biometricsdb;Username=${DB_USER};Password=${DB_PASSWORD};
       - ASPNETCORE_ENVIRONMENT=Production
       - JWTSecret=${JWT_SECRET}
+
+  caddy:
+    image: caddy:2-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+      - ./frontend-dist:/frontend-dist
+    networks:
+      - backend_network
 
   db:
     image: postgres
@@ -32,3 +43,6 @@ networks:
 
 volumes:
   pgdata:
+  caddy_data:
+  caddy_config:
+  frontend-dist:
