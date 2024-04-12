@@ -94,7 +94,7 @@ namespace PersonalBiometricsTracker.Tests
 
             var existingRecord = new BloodGlucose { UserId = user.Id, Value = 5.6m, DateTimeRecorded = DateTime.Now.AddDays(-1) };
             _context.BloodGlucoses.Add(existingRecord);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             var service = new BloodGlucoseService(_context);
             var dto = new BloodGlucoseUpdateDto { Value = updatedValue, DateTimeRecorded = updatedDateTime };
@@ -155,7 +155,7 @@ namespace PersonalBiometricsTracker.Tests
         new BloodGlucose { UserId = user.Id, Value = 4.8m, DateTimeRecorded = DateTime.UtcNow }
     };
 
-            _context.BloodGlucoses.AddRange(bloodGlucoseRecords);
+            await _context.BloodGlucoses.AddRangeAsync(bloodGlucoseRecords);
             await _context.SaveChangesAsync();
 
             // Act
@@ -176,13 +176,13 @@ namespace PersonalBiometricsTracker.Tests
             var user1 = new User { Username = "User1", Email = "user1@test.com", Password = "TestPassword" };
             var user2 = new User { Username = "User2", Email = "user2@test.com", Password = "TestPassword" };
 
-            _context.Users.AddRange(user1, user2);
+            await _context.Users.AddRangeAsync(user1, user2);
             await _context.SaveChangesAsync();
 
             var service = new BloodGlucoseService(_context);
 
             var bloodGlucoseRecord = new BloodGlucose { UserId = user1.Id, Value = 5.6m, DateTimeRecorded = DateTime.UtcNow.AddDays(-1) };
-            _context.BloodGlucoses.Add(bloodGlucoseRecord);
+            await _context.BloodGlucoses.AddAsync(bloodGlucoseRecord);
             await _context.SaveChangesAsync();
 
             // Act: Attempt to retrieve user2's blood glucose records (should be empty)
@@ -202,9 +202,6 @@ namespace PersonalBiometricsTracker.Tests
             // Act & Assert
             await Assert.ThrowsAsync<NotFoundException>(() => service.GetUserBloodGlucoseRecordsAsync(nonExistentUserId));
         }
-
-
-
 
     }
 
