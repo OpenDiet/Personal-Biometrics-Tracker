@@ -86,6 +86,12 @@ namespace PersonalBiometricsTracker.Services
 
         public async Task<IEnumerable<WeightDto>> GetUserWeightsAsync(int userId)
         {
+            var userExists = await _context.Users.AnyAsync(u => u.Id == userId);
+            if (!userExists)
+            {
+                throw new NotFoundException($"User with ID {userId} does not exist.");
+            }
+
             var weights = await _context.Weights
                 .Where(w => w.UserId == userId)
                 .Select(w => new WeightDto
