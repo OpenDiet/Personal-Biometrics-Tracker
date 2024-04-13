@@ -2,24 +2,22 @@ import logo from "../../assets/images/logo-white.svg";
 const Login = () => {
   return (
     <div className="flex h-screen bg-gray-100 align-middle">
-      <div className="flex h-full w-1/2 flex-col justify-center bg-[#FF5000] text-white">
-        <div className="flex w-full flex-col items-center">
-          <div>
-            <img
-              src={logo}
-              width={250}
-              height={50}
-              alt="OpenDiet logo"
-              className="mb-2"
-            />
-            <h2 className="text-2xl font-semibold">
-              Empower your health journey with personal biometric insights.
-            </h2>
-          </div>
+      <div className="h-full w-1/2 flex-col justify-center bg-[#FF5000] text-white max-md:hidden md:flex">
+        <div className="flex w-full flex-col items-center p-2">
+          <img
+            src={logo}
+            width={250}
+            height={50}
+            alt="OpenDiet logo"
+            className="mb-2"
+          />
+          <h2 className="text-2xl font-semibold">
+            Empower your health journey with personal biometric insights.
+          </h2>
         </div>
       </div>
 
-      <div className="flex h-full w-1/2 flex-col justify-center">
+      <div className="flex h-full flex-col justify-center p-2 max-md:w-full md:w-1/2">
         <div className="mx-auto flex max-w-md flex-col">
           <h2 className="mb-4 text-3xl font-semibold">Log into your account</h2>
           <div className="mb-1 flex flex-col">
