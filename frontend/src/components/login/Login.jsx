@@ -1,11 +1,13 @@
-import logo from "../../assets/images/logo-white.svg";
+import { Link } from "react-router-dom";
+import white_logo from "../../assets/images/logo-white.svg";
+import logo from "../../assets/images/logo.svg";
 const Login = () => {
   return (
     <div className="flex h-screen bg-gray-100 align-middle">
       <div className="h-full w-1/2 flex-col justify-center bg-[#FF5000] text-white max-md:hidden md:flex">
-        <div className="flex w-full flex-col items-center p-2">
+        <div className="flex w-full flex-col items-center p-4">
           <img
-            src={logo}
+            src={white_logo}
             width={250}
             height={50}
             alt="OpenDiet logo"
@@ -19,25 +21,28 @@ const Login = () => {
 
       <div className="flex h-full flex-col justify-center p-2 max-md:w-full md:w-1/2">
         <div className="mx-auto flex max-w-md flex-col">
-          <h2 className="mb-4 text-3xl font-semibold">Log into your account</h2>
-          <div className="mb-1 flex flex-col">
+          <div className="mb-2 w-full justify-center max-md:flex md:hidden">
+            <img src={logo} alt="OpenDiet Logo" width={250} height={50} />
+          </div>
+          <h2 className="mb-5 text-3xl font-semibold">Log into your account</h2>
+          <div className="mb-2 flex flex-col">
             <label htmlFor="username" className="mb-1">
               Username
             </label>
             <input
-              className="rounded-lg border border-gray-300 p-2"
+              className="rounded-lg border border-gray-400 p-2"
               type="text"
               id="username"
               name="username"
               required
             />
           </div>
-          <div className="mb-1 flex flex-col">
+          <div className="mb-2 flex flex-col">
             <label htmlFor="password" className="mb-1">
               Password
             </label>
             <input
-              className="rounded-lg border border-gray-300 p-2"
+              className="rounded-lg border border-gray-400 p-2"
               type="password"
               id="password"
               name="password"
@@ -54,16 +59,20 @@ const Login = () => {
               />
               <label htmlFor="remember">Remember me</label>
             </div>
-            <a href="#">Forgot your password?</a>
+            <Link to="/" className="underline">
+              Forgot your password?
+            </Link>
           </div>
           <button
             type="submit"
-            className="mt-2 mt-2 rounded-lg bg-[#ff5000] p-2 font-bold text-white hover:bg-[#ff4000] active:bg-[#ff3800]"
+            className="mt-2 rounded-lg bg-[#ff5000] p-2 font-bold text-white hover:bg-[#ff4000] active:bg-[#ff3800]"
           >
             LOGIN
           </button>
           <div className="mt-2 w-full text-center">
-            Don&apos;t have an account? <a href="#">Register as a new user!</a>
+            <Link to="/registration" className="text-sm underline">
+              Register as a new user!
+            </Link>
           </div>
         </div>
       </div>
