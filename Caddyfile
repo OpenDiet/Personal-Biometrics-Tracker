@@ -12,5 +12,4 @@ pbt.opendiet.io {
 
 pbtapi.opendiet.io {
     reverse_proxy api:80
-    redir https://{host}{uri}
 }
