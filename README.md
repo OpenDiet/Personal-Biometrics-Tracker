@@ -1,5 +1,7 @@
 # Personal Biometrics Tracker
 
+CI / CD Status: [![CircleCI](https://dl.circleci.com/status-badge/img/circleci/VYytNEHhkDreXVCvaRve26/7XoqyxA6LcfiNT56FApJp4/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/circleci/VYytNEHhkDreXVCvaRve26/7XoqyxA6LcfiNT56FApJp4/tree/main)
+
 This project is under the beginning stages of development. The intentions are to provide an application for users to keep track of their personal biometrics.
 
 The first stage will include weight tracking and blood glucose tracking.
