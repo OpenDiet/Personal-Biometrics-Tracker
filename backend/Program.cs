@@ -48,4 +48,22 @@ app.UseAuthorization();
 // Map Controllers
 app.MapControllers();
 
+// If PROD, apply migrations
+if (app.Environment.IsProduction())
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        try
+        {
+            var dbContext = services.GetRequiredService<PersonalBiometricsTrackerDbContext>();
+            dbContext.Database.Migrate();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("An error occurred while applying migrations: " + ex.Message);
+        }
+    }
+}
+
 app.Run();
