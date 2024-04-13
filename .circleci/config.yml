@@ -50,6 +50,11 @@ jobs:
     docker:
       - image: cimg/base:2023.04
     steps:
+      - run:
+          name: Add SSH Key to known hosts
+          command: |
+            mkdir -p ~/.ssh
+            echo "$PROD_SERVER_1_IP_ADDRESS ssh-rsa $PROD_PUB_KEY" >> ~/.ssh/known_hosts
       - attach_workspace:
           at: ~/project
       - add_ssh_keys:
@@ -79,7 +84,10 @@ workflows:
   version: 2
   deploy:
     jobs:
-      - clone_repository
+      - clone_repository:
+          filters:
+            branches:
+              only: main
       - build_frontend:
           requires:
             - clone_repository
