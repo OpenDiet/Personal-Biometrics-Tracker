@@ -51,7 +51,7 @@ jobs:
       - image: cimg/base:2023.04
     steps:
       - run:
-          name: Add SSH Key to known hosts
+          name: Add Host Public SSH Key to known hosts
           command: |
             mkdir -p ~/.ssh
             echo "$PROD_SERVER_1_IP_ADDRESS $PROD_PUB_KEY" >> ~/.ssh/known_hosts
@@ -75,6 +75,11 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "SHA256:Zaa43//W51wZu7coAIqyhHIFi9jQuP+XmOxlsHzn1MI"
+      - run:
+          name: Add Host Public SSH Key to known hosts
+          command: |
+            mkdir -p ~/.ssh
+            echo "$PROD_SERVER_1_IP_ADDRESS $PROD_PUB_KEY" >> ~/.ssh/known_hosts
       - run:
           name: Restart Application
           command: |
