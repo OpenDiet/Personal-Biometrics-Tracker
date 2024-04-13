@@ -54,7 +54,7 @@ jobs:
           name: Add SSH Key to known hosts
           command: |
             mkdir -p ~/.ssh
-            echo "$PROD_SERVER_1_IP_ADDRESS ssh-rsa $PROD_PUB_KEY" >> ~/.ssh/known_hosts
+            echo "$PROD_SERVER_1_IP_ADDRESS $PROD_PUB_KEY" >> ~/.ssh/known_hosts
       - attach_workspace:
           at: ~/project
       - add_ssh_keys:
