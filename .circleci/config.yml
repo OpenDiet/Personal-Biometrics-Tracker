@@ -1,0 +1,94 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@4.7.0
+
+jobs:
+  clone_repository:
+    docker:
+      - image: cimg/base:2023.04
+    steps:
+      - checkout
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - .
+
+  build_frontend:
+    docker:
+      - image: cimg/node:21.7.3
+    working_directory: ~/project/frontend
+    steps:
+      - run: ls -la ~/project && ls -la ~/project/frontend
+      - attach_workspace:
+          at: ~/project
+      - run: npm install
+      - run: npm run build
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - frontend/dist
+
+  prepare_deployment:
+    docker:
+      - image: cimg/python:3.9
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - run:
+          name: Prepare Deployment
+          command: |
+            sed -i "s|\\\${DB_USER}|${DB_USER}|g" ~/project/docker-compose-prod.yml
+            sed -i "s|\\\${DB_PASSWORD}|${DB_PASSWORD}|g" ~/project/docker-compose-prod.yml
+            sed -i "s|\\\${JWT_SECRET}|${JWT_SECRET}|g" ~/project/docker-compose-prod.yml
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - docker-compose-prod.yml
+
+  deploy_to_production:
+    docker:
+      - image: cimg/base:2023.04
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - add_ssh_keys:
+          fingerprints:
+            - "SHA256:hHfsZalshT5i3T7IekIjcS2YCUzpUUH2XeNFB9LnaVg"
+      - run:
+          name: Deploy to Production
+          command: |
+            scp -r backend/ ${PROD_SERVER_1_USER}@${PROD_SERVER_1_IP_ADDRESS}:/root/pbt/
+            scp -r frontend/dist/ ${PROD_SERVER_1_USER}@${PROD_SERVER_1_IP_ADDRESS}:/root/pbt/frontend
+            scp docker-compose-prod.yml ${PROD_SERVER_1_USER}@${PROD_SERVER_1_IP_ADDRESS}:/root/pbt/
+            scp ./Caddyfile ${PROD_SERVER_1_USER}@${PROD_SERVER_1_IP_ADDRESS}:/root/pbt/
+
+  restart_application:
+    docker:
+      - image: cimg/base:2023.04
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "SHA256:hHfsZalshT5i3T7IekIjcS2YCUzpUUH2XeNFB9LnaVg"
+      - run:
+          name: Restart Application
+          command: |
+            ssh ${PROD_SERVER_1_USER}@${PROD_SERVER_1_IP_ADDRESS} 'cd /root/pbt && docker compose -f docker-compose-prod.yml down && docker compose -f docker-compose-prod.yml up --build -d'
+
+workflows:
+  version: 2
+  deploy:
+    jobs:
+      - clone_repository
+      - build_frontend:
+          requires:
+            - clone_repository
+      - prepare_deployment:
+          requires:
+            - build_frontend
+      - deploy_to_production:
+          requires:
+            - prepare_deployment
+      - restart_application:
+          requires:
+            - deploy_to_production
