@@ -14,7 +14,7 @@ const Login = () => {
             className="mb-2"
           />
           <h2 className="text-2xl font-semibold">
-            Empower your health journey with personal biometric insights.
+            Empower your health journey with personal biometric insights
           </h2>
         </div>
       </div>
