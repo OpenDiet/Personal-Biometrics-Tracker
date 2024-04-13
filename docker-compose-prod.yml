@@ -8,7 +8,7 @@ services:
     networks:
       - backend_network
     environment:
-      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=biometricsdb;Username=${DB_USER};Password=${DB_PASSWORD};
+      - ConnectionStrings__BiometricsDb=Host=db;Port=5432;Database=biometricsdb;Username=${DB_USER};Password=${DB_PASSWORD};
       - ASPNETCORE_ENVIRONMENT=Production
       - JWTSecret=${JWT_SECRET}
       - ASPNETCORE_URLS=http://+:80
