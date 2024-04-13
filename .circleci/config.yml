@@ -54,7 +54,7 @@ jobs:
           at: ~/project
       - add_ssh_keys:
           fingerprints:
-            - "SHA256:hHfsZalshT5i3T7IekIjcS2YCUzpUUH2XeNFB9LnaVg"
+            - "SHA256:Zaa43//W51wZu7coAIqyhHIFi9jQuP+XmOxlsHzn1MI"
       - run:
           name: Deploy to Production
           command: |
@@ -69,7 +69,7 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "SHA256:hHfsZalshT5i3T7IekIjcS2YCUzpUUH2XeNFB9LnaVg"
+            - "SHA256:Zaa43//W51wZu7coAIqyhHIFi9jQuP+XmOxlsHzn1MI"
       - run:
           name: Restart Application
           command: |
